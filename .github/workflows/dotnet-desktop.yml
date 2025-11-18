@@ -1,0 +1,41 @@
+name: Build and Deploy .NET Application
+
+# Se ejecuta cuando se suben cambios a la rama principal (main)
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 1. Check out code (Obtener código)
+      uses: actions/checkout@v4
+    
+    - name: 2. Set up .NET (Configurar SDK de .NET 9.0)
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x' 
+
+    - name: 3. Restaurar Dependencias
+      # *** CORRECCIÓN FINAL: DOBLE CARPETA ***
+      run: dotnet restore ./Lab\ 14\ -\ Carlos\ Alonso\ Mamani/Lab\ 14\ -\ Carlos\ Alonso\ Mamani/
+
+    - name: 4. Compilar la Aplicación (Build)
+      # *** CORRECCIÓN FINAL: DOBLE CARPETA ***
+      run: dotnet build ./Lab\ 14\ -\ Carlos\ Alonso\ Mamani/Lab\ 14\ -\ Carlos\ Alonso\ Mamani/ --configuration Release --no-restore
+      
+    - name: 5. Publicar la Aplicación (Publish)
+      # *** CORRECCIÓN FINAL: DOBLE CARPETA ***
+      run: dotnet publish ./Lab\ 14\ -\ Carlos\ Alonso\ Mamani/Lab\ 14\ -\ Carlos\ Alonso\ Mamani/ --configuration Release --output ./published
+      
+    - name: 6. Deploy to server (Despliegue - EJEMPLO)
+      uses: actions/upload-artifact@v4
+      with:
+        name: net-app-published
+        path: ./published
